@@ -27,10 +27,10 @@ namespace DS
         public float inAirTimer;
 
         [Header("Movement Stats")]
-        [SerializeField] float movementSpeed = 5;
-        [SerializeField] float sprintSpeed = 7;
+        [SerializeField] float movementSpeed = 7;
+        [SerializeField] float sprintSpeed = 10;
         [SerializeField] float rotationSpeed = 10;
-        [SerializeField] float fallingSpeed = 80;
+        [SerializeField] float fallingSpeed = 10;
 
         void Start()
         {
@@ -44,6 +44,13 @@ namespace DS
 
             playerManager.isGrounded = true;
             ignoreForGroundCheck = ~(1 << 8 | 1 << 11);
+        }
+
+        public void Update()
+        {
+            float delta = Time.deltaTime;
+            inputHandler.TickInput(delta);
+            HandleMovement(delta);
         }
 
         #region Movement
@@ -89,7 +96,7 @@ namespace DS
 
             float speed = movementSpeed;
 
-            if (inputHandler.sprintFlag)
+            if (inputHandler.sprintFlag && inputHandler.moveAmount != 0)
             {
                 speed = sprintSpeed;
                 playerManager.isSprinting = true;
@@ -147,6 +154,9 @@ namespace DS
             if (Physics.Raycast(origin, myTransform.forward, out hit, 0.4f))
             {
                 moveDirection = Vector3.zero;
+            } else
+            {
+                playerManager.isInAir = true;
             }
 
             if (playerManager.isInAir)
@@ -174,14 +184,15 @@ namespace DS
                     if (inAirTimer > 0.5f)
                     {
                         Debug.Log("You were in the air for " + inAirTimer);
+                        // animatorHandler.PlayTargetAnimation("Locomotion", true);
                         animatorHandler.PlayTargetAnimation("Land", true);
                         inAirTimer = 0;
                     }
-                    else
-                    {
-                        animatorHandler.PlayTargetAnimation("Locomotion", false);
-                        inAirTimer = 0;
-                    }
+                    //else
+                    //{
+                        // animatorHandler.PlayTargetAnimation("Locomotion", false);
+                        // inAirTimer = 0;
+                    //}
 
                     playerManager.isInAir = false;
                 }
@@ -194,10 +205,10 @@ namespace DS
 
                     if (playerManager.isInAir == false)
                     {
-                        if (playerManager.isInteracting == false)
-                        {
+                        //if (playerManager.isInteracting == false)
+                        //{
                             animatorHandler.PlayTargetAnimation("Falling", true);
-                        }
+                        //}
 
                         Vector3 vel = rigidbody.velocity;
                         vel.Normalize();
@@ -219,7 +230,6 @@ namespace DS
                 }
             }
         }
-
         #endregion
     }
 }

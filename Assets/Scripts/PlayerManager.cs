@@ -37,8 +37,8 @@ namespace DS
         {
             float delta = Time.deltaTime;
             isInteracting = anim.GetBool("isInteracting");
-
-            isSprinting = inputHandler.b_Input;
+            inputHandler.rollFlag = false;
+            isSprinting = inputHandler.b_Input && inputHandler.moveAmount != 0;
             inputHandler.TickInput(delta);
             playerLocomotion.HandleMovement(delta);
             playerLocomotion.HandleRollingAndSprinting(delta);

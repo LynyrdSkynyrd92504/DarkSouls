@@ -20,9 +20,26 @@ namespace DS
         public float rollInputTimer;
 
         PlayerControls inputActions;
+        CameraHandler cameraHandler;
 
         Vector2 movementInput;
         Vector2 cameraInput;
+
+        private void Awake()
+        {
+            cameraHandler = CameraHandler.singleton;
+        }
+
+        private void FixedUpdate()
+        {
+            float delta = Time.fixedDeltaTime;
+
+            if (cameraHandler != null)
+            {
+                cameraHandler.FollowTarget(delta);
+                cameraHandler.HandleCameraRotation(delta, mouseX, mouseY);
+            }
+        }
 
         public void OnEnable()
         {
@@ -63,7 +80,10 @@ namespace DS
             if (b_Input)
             {
                 rollInputTimer += delta;
-                sprintFlag = true;
+                if (moveAmount != 0)
+                {
+                    sprintFlag = true;
+                }
             }
             else
             {

@@ -68,7 +68,7 @@ namespace DS
             }
             else if (horizontalMovement < -0.55f)
             {
-                v = -1;
+                h = -1;
             }
             else
             {
@@ -114,7 +114,8 @@ namespace DS
             playerLocomotion.rigidbody.drag = 0;
             Vector3 deltaPosition = anim.deltaPosition;
             deltaPosition.y = 0;
-            Vector3 velocity = deltaPosition / delta;
+            float fix = 2.3f;
+            Vector3 velocity = (deltaPosition * fix) / delta;
             playerLocomotion.rigidbody.velocity = velocity;
         }
     }
